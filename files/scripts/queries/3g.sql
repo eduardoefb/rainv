@@ -250,44 +250,57 @@ FROM _xml_.WCEL WHERE
        _xml_.WCEL.customerId = _cid_ ;
      
 
-/*QUERY_NAME: WBTS_Units*/
-SELECT _xml_.SUBMODULE.dateTime AS DATE,
+/*QUERY_NAME: WBTS_SMOD*/
+SELECT _xml_.SMOD.dateTime AS DATE,
    (SELECT _xml_.RNC.name FROM _xml_.RNC WHERE
-      _xml_.RNC.customerId = _xml_.SUBMODULE.customerID AND
-      _xml_.RNC.file_uuid = _xml_.SUBMODULE.file_uuid AND
-      _xml_.SUBMODULE.distName LIKE CONCAT(_xml_.RNC.distName, '%') LIMIT 1) AS RNC,
+      _xml_.RNC.customerId = _xml_.SMOD.customerID AND
+      _xml_.RNC.file_uuid = _xml_.SMOD.file_uuid AND
+      _xml_.SMOD.distName LIKE CONCAT(_xml_.RNC.distName, '%') LIMIT 1) AS RNC,
    (SELECT _xml_.RNC._RNC FROM _xml_.RNC WHERE
-      _xml_.RNC.customerId = _xml_.SUBMODULE.customerID AND
-      _xml_.RNC.file_uuid = _xml_.SUBMODULE.file_uuid AND
-      _xml_.SUBMODULE.distName LIKE CONCAT(_xml_.RNC.distName, '%') LIMIT 1) AS RNC_ID,
+      _xml_.RNC.customerId = _xml_.SMOD.customerID AND
+      _xml_.RNC.file_uuid = _xml_.SMOD.file_uuid AND
+      _xml_.SMOD.distName LIKE CONCAT(_xml_.RNC.distName, '%') LIMIT 1) AS RNC_ID,
    (SELECT _xml_.WBTS._WBTS FROM _xml_.WBTS WHERE
-      _xml_.WBTS.customerId = _xml_.SUBMODULE.customerID AND
-      _xml_.WBTS.file_uuid = _xml_.SUBMODULE.file_uuid AND
-      _xml_.SUBMODULE.distName LIKE CONCAT(_xml_.WBTS.distName, '%') LIMIT 1) AS WBTS_ID,             
+      _xml_.WBTS.customerId = _xml_.SMOD.customerID AND
+      _xml_.WBTS.file_uuid = _xml_.SMOD.file_uuid AND
+      _xml_.SMOD.distName LIKE CONCAT(_xml_.WBTS.distName, '%') LIMIT 1) AS WBTS_ID,             
    (SELECT _xml_.WBTS.name FROM _xml_.WBTS WHERE
-      _xml_.WBTS.customerId = _xml_.SUBMODULE.customerID AND
-      _xml_.WBTS.file_uuid = _xml_.SUBMODULE.file_uuid AND
-      _xml_.SUBMODULE.distName LIKE CONCAT(_xml_.WBTS.distName, '%') LIMIT 1) AS WBTS_NAME,   
-   IF(_xml_.SUBMODULE.unitType LIKE 'CORE_%',      
-      IFNULL(
-         (SELECT _xml_.SMOD.prodCode FROM _xml_.SMOD WHERE 
-            _xml_.SMOD.serNum = _xml_.SUBMODULE.serialNumber AND
-            _xml_.SMOD.file_uuid = _xml_.SUBMODULE.file_uuid LIMIT 1),         
-         (SELECT _xml_.RMOD.prodCode FROM _xml_.RMOD WHERE 
-            _xml_.RMOD.serNum = _xml_.SUBMODULE.serialNumber AND
-            _xml_.RMOD.file_uuid = _xml_.SUBMODULE.file_uuid LIMIT 1)), 
-      IF(_xml_.SUBMODULE.identificationCode LIKE '%.%',
-         LEFT(_xml_.SUBMODULE.identificationCode, LOCATE('.', _xml_.SUBMODULE.identificationCode) -1),
-         _xml_.SUBMODULE.identificationCode)) AS PROD_CODE,   
-   IFNULL((SELECT _log_.hardware.name FROM _log_.hardware WHERE
-   PROD_CODE LIKE CONCAT(_log_.hardware.code, '%') LIMIT 1), _xml_.SUBMODULE.unitType) AS UNIT_TYPE,  
-   IFNULL((SELECT _log_.hardware.description FROM _log_.hardware WHERE
-   PROD_CODE LIKE CONCAT(_log_.hardware.code, '%') LIMIT 1), "-") AS UNIT_DESCRIPTION,         
-   _xml_.SUBMODULE.serialNumber AS SERIAL   
-FROM _xml_.SUBMODULE
+      _xml_.WBTS.customerId = _xml_.SMOD.customerID AND
+      _xml_.WBTS.file_uuid = _xml_.SMOD.file_uuid AND
+      _xml_.SMOD.distName LIKE CONCAT(_xml_.WBTS.distName, '%') LIMIT 1) AS WBTS_NAME,
+   _xml_.SMOD.prodCode AS PROD_CODE,      
+   _xml_.SMOD.serNum AS SERIAL_NUMBER,
+   (SELECT _log_.hardware.description FROM _log_.hardware WHERe PROD_CODE LIKE CONCAT(_log_.hardware.code, '%') LIMIT 1) AS UNIT_DESCRIPTION
+FROM _xml_.SMOD
    WHERE 
-      _xml_.SUBMODULE._RNC <> "-" AND      
-      _xml_.SUBMODULE.customerId = _cid_ ; 
+      _xml_.SMOD._RNC <> "-" AND      
+      _xml_.SMOD.customerId = _cid_ ;       
+      
+/*QUERY_NAME: WBTS_RMOD*/
+SELECT _xml_.RMOD.dateTime AS DATE,
+   (SELECT _xml_.RNC.name FROM _xml_.RNC WHERE
+      _xml_.RNC.customerId = _xml_.RMOD.customerID AND
+      _xml_.RNC.file_uuid = _xml_.RMOD.file_uuid AND
+      _xml_.RMOD.distName LIKE CONCAT(_xml_.RNC.distName, '%') LIMIT 1) AS RNC,
+   (SELECT _xml_.RNC._RNC FROM _xml_.RNC WHERE
+      _xml_.RNC.customerId = _xml_.RMOD.customerID AND
+      _xml_.RNC.file_uuid = _xml_.RMOD.file_uuid AND
+      _xml_.RMOD.distName LIKE CONCAT(_xml_.RNC.distName, '%') LIMIT 1) AS RNC_ID,
+   (SELECT _xml_.WBTS._WBTS FROM _xml_.WBTS WHERE
+      _xml_.WBTS.customerId = _xml_.RMOD.customerID AND
+      _xml_.WBTS.file_uuid = _xml_.RMOD.file_uuid AND
+      _xml_.RMOD.distName LIKE CONCAT(_xml_.WBTS.distName, '%') LIMIT 1) AS WBTS_ID,             
+   (SELECT _xml_.WBTS.name FROM _xml_.WBTS WHERE
+      _xml_.WBTS.customerId = _xml_.RMOD.customerID AND
+      _xml_.WBTS.file_uuid = _xml_.RMOD.file_uuid AND
+      _xml_.RMOD.distName LIKE CONCAT(_xml_.WBTS.distName, '%') LIMIT 1) AS WBTS_NAME,
+   _xml_.RMOD.prodCode AS PROD_CODE,      
+   _xml_.RMOD.serNum AS SERIAL_NUMBER,
+   (SELECT _log_.hardware.description FROM _log_.hardware WHERe PROD_CODE LIKE CONCAT(_log_.hardware.code, '%') LIMIT 1) AS UNIT_DESCRIPTION
+FROM _xml_.RMOD
+   WHERE 
+      _xml_.RMOD._RNC <> "-" AND      
+      _xml_.RMOD.customerId = _cid_ ;           
 
 
 /*QUERY_NAME: WBTS_NtpServers*/
