@@ -157,7 +157,7 @@
                      $key = str_replace("file_", "", $key);
                      $key = rtrim($key, "_");						                        
                      if($value == "DELETE"){
-                        $query = "UPDATE files SET files.status = 'WAITING REMOVAL' WHERE files.id = 'INACTIVE' AND files.id = '". $key ."';" ;
+                        $query = "UPDATE files SET files.status = 'WAITING REMOVAL' WHERE files.status = 'INACTIVE' AND files.id = '". $key ."';" ;
                         $res = $con->query($query);
                      }
 					    
