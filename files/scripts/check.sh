@@ -234,8 +234,8 @@ for c in ${clist[*]}; do
    cd $XLS_DL_DIR/   
    cp ${cname[ind]}*.xlsx ${cname[ind]}/
    zip -r $XLS_DL_DIR/${cname[ind]}.zip ${cname[ind]}/*   
-   cd $cwd $XLS_DL_DIR/${cname[ind]}
-   rm -rf 
+   cd $cwd 
+   rm -rf $XLS_DL_DIR/${cname[ind]}
    ind=$(($ind+1))
    
 done

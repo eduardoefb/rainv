@@ -1,10 +1,12 @@
 #!/bin/bash
 
-#export SERVER=eduabati@10.9.0.2
-rm files.tar.gz 2>/dev/null
-#pushd /home/eduabati/NetBeansProjects/Data2ExcelCli/ && ant && popd
-#cp -v /home/eduabati/NetBeansProjects/Data2ExcelCli/dist/Data2ExcelCli.jar files/scripts/
+if [ -z "${1}" ]; then
+   echo "Usage:"
+   echo "$0 <comit comment>"
+   exit 1
+fi
 
+rm files.tar.gz 2>/dev/null
 pushd /home/eduabati/NetBeansProjects/ParseXMLGeneral/ && ant && popd
 cp -v /home/eduabati/NetBeansProjects/ParseXMLGeneral/dist/GetXmlInfo.jar files/scripts/
 
@@ -18,6 +20,6 @@ popd
 #Github
 git init
 git checkout ra 
-git commit -a -m "radio_access_db_extractor"
+git commit -a -m "${1}"
 git status
 git push -u origin ra 
