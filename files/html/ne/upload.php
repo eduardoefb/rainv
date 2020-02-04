@@ -167,7 +167,7 @@
                      }
                      
                      elseif($value == "DEACTIVATE"){
-                        $query = "UPDATE files SET files.status = 'WAITING DEACTIVATION' WHERE files.status = 'ACTIVE'files.id = '". $key ."';" ;							   
+                        $query = "UPDATE files SET files.status = 'WAITING DEACTIVATION' WHERE files.status = 'ACTIVE' AND files.id = '". $key ."';" ;							   
                         $res = $con->query($query);							   
                      }
                   }
