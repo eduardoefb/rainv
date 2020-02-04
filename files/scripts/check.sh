@@ -207,7 +207,7 @@ if [ $rmdup -eq 1 ]; then
             echo "`date` Removing duplication: $dn Version: $ver Name: $name $fuuid"
             mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "DELETE FROM $tables WHERE distName = '$dn' AND _version = '$ver' AND name = '$name'" 2>/dev/null
             for tab in `mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SHOW TABLES;" | grep "_"`; do
-               echo "`date` Removing duplication: $dn Version: $ver Name: $name $fuuid from tabble $tab"           
+               echo "`date` Removing duplication: $dn Version: $ver Name: $name $fuuid from table $tab"           
                mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "DELETE FROM $tab WHERE distName = '$dn' AND file_uuid = '$fuuid'" 2>/dev/null
             done
          done      
