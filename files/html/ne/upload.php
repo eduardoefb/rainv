@@ -151,11 +151,19 @@
          <br>
          <frame2>
             <h2>Log files</h2>
-            <?php               
-               foreach($_GET as $key => $value){
+            <?php 
+            
+               foreach($_GET as $key => $value){				   				  
+				   
                   if (substr( $key, 0, 5 ) == "file_") {
                      $key = str_replace("file_", "", $key);
-                     $key = rtrim($key, "_");						                        
+                     $key = rtrim($key, "_");
+                     
+                     $query = "SELECT files.status AS STATUS FROM files, cliente WHERE files.id = '". $key ."';" ;
+                     $res = $con->query($query);                         
+                     $row = $res->fetch_assoc();
+                     echo $row["STATUS"];
+                     					                        
                      if($value == "DELETE"){
                         $query = "UPDATE files SET files.status = 'WAITING REMOVAL' WHERE files.id = '". $key ."';" ;
                         $res = $con->query($query);
