@@ -8,9 +8,9 @@ function start(){
 }
 
 function stop(){
-   p=`ps -ef | grep radb_service.sh | grep -v grep | awk '{print $2}'`
-   kill -9 ${p}
    rm -f ${SCRIPT_RUNNING_FILE} 2>/dev/null
+   p=`ps -ef | grep radb_service.sh start| grep -v grep | awk '{print $2}'`
+   kill -9 ${p}   
    exit 0
 }
 
@@ -39,13 +39,11 @@ case ${1} in
       ;;
       
    stop)
-      stop&
-      exit 0
+      stop      
       ;;
       
    restart)
-      stop && start&
-      exit 0
+      stop && start&      
       ;;
                
    *)
