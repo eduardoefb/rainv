@@ -205,7 +205,8 @@ if [ $rmdup -eq 1 ]; then
             name=`mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SELECT _version, name from $tables WHERE distName = '$dn' ORDER BY _version LIMIT 1" |awk '{print $2}'`         
             fuuid=`mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SELECT _version, file_uuid from $tables WHERE distName = '$dn' ORDER BY _version LIMIT 1" |awk '{print $2}'`         
             echo "`date` Removing duplication: $dn Version: $ver Name: $name $fuuid"
-            mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "DELETE FROM $tables WHERE distName = '$dn' AND _version = '$ver' AND name = '$name'" 2>/dev/null
+            #mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "DELETE FROM $tables WHERE distName = '$dn' AND _version = '$ver' AND name = '$name'" 2>/dev/null
+            mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "DELETE FROM $tables WHERE distName = '$dn' AND _version = '$ver' AND name = '$name' OR name IS NULL"   2>/dev/null
             for tab in `mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SHOW TABLES;" | grep "_"`; do
                echo "`date` Removing duplication: $dn Version: $ver Name: $name $fuuid from table $tab"           
                mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "DELETE FROM $tab WHERE distName = '$dn' AND file_uuid = '$fuuid'" 2>/dev/null
