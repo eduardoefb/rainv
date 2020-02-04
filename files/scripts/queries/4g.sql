@@ -11,23 +11,28 @@ SELECT _log_.cliente.name AS CUSTOMER,
    (SELECT COUNT(_xml_.RMOD.distName) FROM _xml_.RMOD WHERE 
       _xml_.RMOD._MRBTS = _xml_.MRBTS._MRBTS AND 
       _xml_.RMOD.customerId = _xml_.MRBTS.customerId AND
-      _xml_.RMOD.file_uuid = _xml_.MRBTS.file_uuid ) AS RMOD,   
+      _xml_.RMOD.file_uuid = _xml_.MRBTS.file_uuid AND
+      (_xml_.RMOD._RNC IS NULL OR _xml_.RMOD._RNC = "-")) AS RMOD,   
    (SELECT COUNT(_xml_.RMOD_R.distName) FROM _xml_.RMOD_R WHERE 
       _xml_.RMOD_R._MRBTS = _xml_.MRBTS._MRBTS AND 
       _xml_.RMOD_R.customerId = _xml_.MRBTS.customerId AND
-      _xml_.RMOD_R.file_uuid = _xml_.MRBTS.file_uuid ) AS RMOD_R,
+      _xml_.RMOD_R.file_uuid = _xml_.MRBTS.file_uuid AND
+      (_xml_.RMOD_R._RNC IS NULL OR _xml_.RMOD_R._RNC = "-")) AS RMOD_R,
    (SELECT COUNT(_xml_.SMOD.distName) FROM _xml_.SMOD WHERE 
       _xml_.SMOD._MRBTS = _xml_.MRBTS._MRBTS AND 
       _xml_.SMOD.customerId = _xml_.MRBTS.customerId AND
-      _xml_.SMOD.file_uuid = _xml_.MRBTS.file_uuid ) AS SMOD,      
+      _xml_.SMOD.file_uuid = _xml_.MRBTS.file_uuid AND
+      (_xml_.SMOD._RNC IS NULL OR _xml_.SMOD._RNC = "-")) AS SMOD,      
    (SELECT COUNT(_xml_.SMOD_R.distName) FROM _xml_.SMOD_R WHERE 
       _xml_.SMOD_R._MRBTS = _xml_.MRBTS._MRBTS AND 
       _xml_.SMOD_R.customerId = _xml_.MRBTS.customerId AND
-      _xml_.SMOD_R.file_uuid = _xml_.MRBTS.file_uuid ) AS SMOD_R,      
+      _xml_.SMOD_R.file_uuid = _xml_.MRBTS.file_uuid AND
+      (_xml_.SMOD_R._RNC IS NULL OR _xml_.SMOD_R._RNC = "-")) AS SMOD_R,      
    (SELECT COUNT(_xml_.SMOD_EXT_R.distName) FROM _xml_.SMOD_EXT_R WHERE 
       _xml_.SMOD_EXT_R._MRBTS = _xml_.MRBTS._MRBTS AND 
       _xml_.SMOD_EXT_R.customerId = _xml_.MRBTS.customerId AND
-      _xml_.SMOD_EXT_R.file_uuid = _xml_.MRBTS.file_uuid ) AS SMOD_EXT_R,
+      _xml_.SMOD_EXT_R.file_uuid = _xml_.MRBTS.file_uuid AND
+      (_xml_.SMOD_EXT_R._RNC IS NULL OR _xml_.SMOD_EXT_R._RNC = "-")) AS SMOD_EXT_R,
    (SELECT _xml_.IPNO.mPlaneIpAddress FROM _xml_.IPNO WHERE 
       _xml_.IPNO._MRBTS = _xml_.MRBTS._MRBTS AND 
       _xml_.IPNO.customerId = _xml_.MRBTS.customerId AND
