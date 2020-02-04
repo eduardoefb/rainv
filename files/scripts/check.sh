@@ -199,7 +199,7 @@ if [ $rmdup -eq 1 ]; then
    while :; do
       dups=0
       for tables in `mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SHOW TABLES;" | grep -v "_"`; do
-         for dn in `mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SELECT distName, COUNT(*) AS times, IF (COUNT(*)>1,\"duplicated\", \" \") AS duplicated FROM $tables GROUP BY CONCAT(distName,name)" | grep "duplicated" | awk '{print $1}'`; do      
+         for dn in `mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SELECT distName, COUNT(*) AS times, IF (COUNT(*)>1,\"duplicated\", \" \") AS duplicated FROM $tables GROUP BY IFNULL(distName, CONCAT(distName,name))" | grep "duplicated" | awk '{print $1}'`; do      
             dups=$(($dups+1))
             ver=`mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SELECT _version from $tables WHERE distName = '$dn' ORDER BY _version LIMIT 1"`
             name=`mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SELECT _version, name from $tables WHERE distName = '$dn' ORDER BY _version LIMIT 1" |awk '{print $2}'`         
