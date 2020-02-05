@@ -1,6 +1,7 @@
 #!/bin/bash
 
 function start(){
+   echo "`date` ${0} started."  >> ${SCRIPT_DIR}/update.log
    while :; do
       sleep ${SLEEP_TIME}
       bash ${SCRIPT_DIR}/check.sh >> ${SCRIPT_DIR}/update.log 2>>${SCRIPT_DIR}/update.log
@@ -11,6 +12,7 @@ function stop(){
    rm -f ${SCRIPT_RUNNING_FILE} 2>/dev/null
    p=`ps -ef | grep radb_service.sh start| grep -v grep | awk '{print $2}'`
    kill -9 ${p}   
+   echo "`date` ${0} stopped."  >> ${SCRIPT_DIR}/update.log
    exit 0
 }
 

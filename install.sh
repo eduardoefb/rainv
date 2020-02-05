@@ -158,11 +158,10 @@ Description=Custom RA Database Server
 After=apache2.service mariadb.service
 [Service]
 Type=forking
-ExecStart=/opt/nokia/nedata/scripts/radb_service.sh start
-ExecStop=/opt/nokia/nedata/scripts/radb_service.sh stop
-ExecReload=/opt/nokia/nedata/scripts/radb_service.sh restart
-#PrivateTmp=true
-#Restart=on-abort
+ExecStart=${SCRIPT_DIR}/radb_service.sh start
+ExecStop=${SCRIPT_DIR}/radb_service.sh stop
+ExecReload=${SCRIPT_DIR}/radb_service.sh restart
+
 [Install]
 WantedBy=multi-user.target
 EOF
