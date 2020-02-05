@@ -168,7 +168,7 @@ EOF
 
 #Clear logfile:
 cat /dev/null > ${SCRIPT_DIR}/update.log
-
+sleep 5
 systemctl enable radb.service
 systemctl start radb.service
 
