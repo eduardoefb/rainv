@@ -78,7 +78,7 @@ fi
 
 
 #Delete files
-for file in `ls $TMP_LOG_UPLOAD_DIR/*.zip | awk '{print $NF}' 2>/dev/null`; do
+for file in `ls $TMP_LOG_UPLOAD_DIR/*.zip 2>/dev/null | awk '{print $NF}' 2>/dev/null`; do
    filename=`echo $file | awk -F '/' '{print $NF}'`
    uuid=`echo $filename | awk -F '-' '{print $1}'`
    
@@ -173,9 +173,10 @@ for uuid in `mysql -Ns -u $db_user -p$db_pass $DB1_NAME -e "SELECT files.id FROM
    
    $PARSE_CMD $NE_LOG_DIR/$customer_name/ 
    mysql -Ns -u $db_user -p$db_pass $DB1_NAME -e "UPDATE files SET files.status = 'ACTIVE' WHERE files.id = '$uuid'" 
+   echo "`date` File: $uuid Parse finished. Genearting xlsx files ..."
 done
 
-echo "`date` Parse finished. Genearting xlsx files ..."
+
 ind=0
 
 #Remove itens that have no "name"
