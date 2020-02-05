@@ -78,7 +78,7 @@ fi
 
 
 #Delete files
-for file in `ls $TMP_LOG_UPLOAD_DIR/*.zip | awk '{print $NF}'`; do
+for file in `ls $TMP_LOG_UPLOAD_DIR/*.zip | awk '{print $NF}' 2>/dev/null`; do
    filename=`echo $file | awk -F '/' '{print $NF}'`
    uuid=`echo $filename | awk -F '-' '{print $1}'`
    
@@ -233,10 +233,10 @@ for c in ${clist[*]}; do
    zip -r $XLS_DL_DIR/${cname[ind]}.zip ${cname[ind]}/*   
    cd $cwd 
    rm -rf $XLS_DL_DIR/${cname[ind]}
-   ind=$(($ind+1))
-   
+   ind=$(($ind+1))   
+   echo "`date` XLSX file for customer_id ${c} created ..."
 done
-echo "`date` XLSX files created ..."
+
 
 #Delete running file:
 rm $SCRIPT_RUNNING_FILE 2>/dev/null
