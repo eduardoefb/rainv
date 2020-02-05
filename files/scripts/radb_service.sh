@@ -12,8 +12,7 @@ function stop(){
    rm -f ${SCRIPT_RUNNING_FILE} 2>/dev/null
    p=`ps -ef | grep radb_service.sh start| grep -v grep | awk '{print $2}'`
    kill -9 ${p}   
-   echo "`date` ${0} stopped."  >> ${SCRIPT_DIR}/update.log
-   exit 0
+   echo "`date` ${0} stopped."  >> ${SCRIPT_DIR}/update.log   
 }
 
 function usage(){
