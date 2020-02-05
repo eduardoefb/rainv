@@ -166,6 +166,9 @@ ExecReload=${SCRIPT_DIR}/radb_service.sh restart
 WantedBy=multi-user.target
 EOF
 
+#Clear logfile:
+cat /dev/null > ${SCRIPT_DIR}/update.log
+
 systemctl enable radb.service
 systemctl start radb.service
 
