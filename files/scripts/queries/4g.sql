@@ -8,43 +8,35 @@ SELECT _log_.cliente.name AS CUSTOMER,
    _xml_.LNBTS.mnc AS MNC,
    _xml_.LNBTS.name AS NAME,
    _xml_.LNBTS._version AS VERSION,
-   (SELECT COUNT(_xml_.RMOD.distName) FROM _xml_.RMOD WHERE 
-      _xml_.RMOD._MRBTS = _xml_.MRBTS._MRBTS AND 
-      _xml_.RMOD.customerId = _xml_.MRBTS.customerId AND
-      _xml_.RMOD.file_uuid = _xml_.MRBTS.file_uuid AND
-      (_xml_.RMOD._RNC IS NULL OR _xml_.RMOD._RNC = "-")) AS RMOD,   
    (SELECT COUNT(_xml_.RMOD_R.distName) FROM _xml_.RMOD_R WHERE 
       _xml_.RMOD_R._MRBTS = _xml_.MRBTS._MRBTS AND 
       _xml_.RMOD_R.customerId = _xml_.MRBTS.customerId AND
       _xml_.RMOD_R.file_uuid = _xml_.MRBTS.file_uuid AND
-      (_xml_.RMOD_R._RNC IS NULL OR _xml_.RMOD_R._RNC = "-")) AS RMOD_R,
-   (SELECT COUNT(_xml_.SMOD.distName) FROM _xml_.SMOD WHERE 
-      _xml_.SMOD._MRBTS = _xml_.MRBTS._MRBTS AND 
-      _xml_.SMOD.customerId = _xml_.MRBTS.customerId AND
-      _xml_.SMOD.file_uuid = _xml_.MRBTS.file_uuid AND
-      (_xml_.SMOD._RNC IS NULL OR _xml_.SMOD._RNC = "-")) AS SMOD,      
+      _xml_.RMOD_R.distName NOT LIKE '%/RNC-%') AS RMOD_R,
    (SELECT COUNT(_xml_.SMOD_R.distName) FROM _xml_.SMOD_R WHERE 
       _xml_.SMOD_R._MRBTS = _xml_.MRBTS._MRBTS AND 
       _xml_.SMOD_R.customerId = _xml_.MRBTS.customerId AND
       _xml_.SMOD_R.file_uuid = _xml_.MRBTS.file_uuid AND
-      (_xml_.SMOD_R._RNC IS NULL OR _xml_.SMOD_R._RNC = "-")) AS SMOD_R,      
+      _xml_.SMOD_R.distName NOT LIKE '%/RNC-%') AS SMOD_R,
    (SELECT COUNT(_xml_.SMOD_EXT_R.distName) FROM _xml_.SMOD_EXT_R WHERE 
       _xml_.SMOD_EXT_R._MRBTS = _xml_.MRBTS._MRBTS AND 
       _xml_.SMOD_EXT_R.customerId = _xml_.MRBTS.customerId AND
       _xml_.SMOD_EXT_R.file_uuid = _xml_.MRBTS.file_uuid AND
-      (_xml_.SMOD_EXT_R._RNC IS NULL OR _xml_.SMOD_EXT_R._RNC = "-")) AS SMOD_EXT_R,
+      _xml_.SMOD_EXT_R.distName NOT LIKE '%/RNC-%') AS SMOD_EXT_R,
    (SELECT _xml_.IPNO.mPlaneIpAddress FROM _xml_.IPNO WHERE 
       _xml_.IPNO._MRBTS = _xml_.MRBTS._MRBTS AND 
       _xml_.IPNO.customerId = _xml_.MRBTS.customerId AND
       _xml_.IPNO.file_uuid = _xml_.MRBTS.file_uuid AND
       _xml_.IPNO._LNBTS = _xml_.LNBTS._LNBTS AND 
       _xml_.IPNO.customerId = _xml_.LNBTS.customerId AND
+      _xml_.IPNO.distName NOT LIKE '%/RNC-%' AND
       _xml_.IPNO.file_uuid = _xml_.LNBTS.file_uuid) AS OAM_IP_ADDR,
    (SELECT _xml_.IPNO.cPlaneIpAddress FROM _xml_.IPNO WHERE 
       _xml_.IPNO._MRBTS = _xml_.MRBTS._MRBTS AND 
       _xml_.IPNO.customerId = _xml_.MRBTS.customerId AND
       _xml_.IPNO._LNBTS = _xml_.LNBTS._LNBTS AND 
       _xml_.IPNO.customerId = _xml_.LNBTS.customerId AND
+      _xml_.IPNO.distName NOT LIKE '%/RNC-%' AND
       _xml_.IPNO.file_uuid = _xml_.LNBTS.file_uuid ) AS CPLANE_IP_ADDR,
    (SELECT _xml_.IPNO.uPlaneIpAddress FROM _xml_.IPNO WHERE 
       _xml_.IPNO._MRBTS = _xml_.MRBTS._MRBTS AND 
@@ -52,6 +44,7 @@ SELECT _log_.cliente.name AS CUSTOMER,
       _xml_.IPNO.file_uuid = _xml_.MRBTS.file_uuid AND
       _xml_.IPNO._LNBTS = _xml_.LNBTS._LNBTS AND 
       _xml_.IPNO.customerId = _xml_.LNBTS.customerId AND
+      _xml_.IPNO.distName NOT LIKE '%/RNC-%' AND
       _xml_.IPNO.file_uuid = _xml_.LNBTS.file_uuid ) AS USER_IP_ADDR, 
    (SELECT _xml_.IPNO.sPlaneIpAddress FROM _xml_.IPNO WHERE 
       _xml_.IPNO._MRBTS = _xml_.MRBTS._MRBTS AND 
@@ -59,6 +52,7 @@ SELECT _log_.cliente.name AS CUSTOMER,
       _xml_.IPNO.file_uuid = _xml_.MRBTS.file_uuid AND
       _xml_.IPNO._LNBTS = _xml_.LNBTS._LNBTS AND 
       _xml_.IPNO.customerId = _xml_.LNBTS.customerId AND
+      _xml_.IPNO.distName NOT LIKE '%/RNC-%' AND
       _xml_.IPNO.file_uuid = _xml_.LNBTS.file_uuid ) AS SYNCH_IP_ADDR,
    (SELECT _xml_.IPNO.oamIpAddr FROM _xml_.IPNO WHERE 
       _xml_.IPNO._MRBTS = _xml_.MRBTS._MRBTS AND 
@@ -66,6 +60,7 @@ SELECT _log_.cliente.name AS CUSTOMER,
       _xml_.IPNO.file_uuid = _xml_.MRBTS.file_uuid AND
       _xml_.IPNO._LNBTS = _xml_.LNBTS._LNBTS AND 
       _xml_.IPNO.customerId = _xml_.LNBTS.customerId AND
+      _xml_.IPNO.distName NOT LIKE '%/RNC-%' AND
       _xml_.IPNO.file_uuid = _xml_.LNBTS.file_uuid) AS OMS_IP_MAIN,
    (SELECT _xml_.IPNO.secOmsIpAddr FROM _xml_.IPNO WHERE 
       _xml_.IPNO._MRBTS = MRBTS._MRBTS AND 
@@ -73,19 +68,23 @@ SELECT _log_.cliente.name AS CUSTOMER,
       _xml_.IPNO.file_uuid = _xml_.MRBTS.file_uuid AND
       _xml_.IPNO._LNBTS = _xml_.LNBTS._LNBTS AND 
       _xml_.IPNO.customerId = _xml_.LNBTS.customerId AND
+      _xml_.IPNO.distName NOT LIKE '%/RNC-%' AND
       _xml_.IPNO.file_uuid = _xml_.LNBTS.file_uuid ) AS OMS_IP_SEC,                                                
    (SELECT _xml_.FTM.locationName FROM _xml_.FTM WHERE 
       _xml_.FTM._LNBTS = _xml_.LNBTS._LNBTS AND
       _xml_.FTM._MRBTS = _xml_.LNBTS._MRBTS AND
       _xml_.FTM.file_uuid = _xml_.LNBTS.file_uuid AND
+      _xml_.FTM.distName NOT LIKE '%/RNC-%' AND
       _xml_.FTM.customerId = _xml_.LNBTS.customerId ) AS LOCATION
-FROM _log_.cliente, _xml_.MRBTS, _xml_.LNBTS WHERE
+FROM _log_.cliente, _xml_.MRBTS, _xml_.LNBTS 
+WHERE
    _xml_.LNBTS._MRBTS = _xml_.MRBTS._MRBTS AND
    _xml_.LNBTS.customerId = _xml_.MRBTS.customerId AND
    _xml_.LNBTS.file_uuid = _xml_.MRBTS.file_uuid AND
    _xml_.MRBTS.customerId = _log_.cliente.id AND 
-   (_xml_.MRBTS._RNC IS NULL OR _xml_.MRBTS._RNC = "-") AND  
-   _log_.cliente.id AND _log_.cliente.id = _cid_ ;
+   _xml_.MRBTS.distName NOT LIKE '%/RNC-%' AND
+   _log_.cliente.id AND _log_.cliente.id = _cid_ 
+HAVING RMOD_R > 0 OR SMOD_R > 0 OR SMOD_EXT_R > 0;
 
 
 /*QUERY_NAME: LNCEL_DATA*/
@@ -111,21 +110,6 @@ FROM _xml_.LNCEL, _xml_.LNBTS, _xml_.MRBTS, _log_.cliente WHERE
    _log_.cliente.id = _cid_ ;
    
 
-/*QUERY_NAME: SMOD*/   
-SELECT _xml_.SMOD.dateTime AS DATE,
-   (SELECT _xml_.MRBTS.name FROM _xml_.MRBTS WHERE
-      _xml_.SMOD.customerId = _xml_.SMOD.customerID AND
-      _xml_.SMOD.file_uuid = _xml_.SMOD.file_uuid AND
-      _xml_.SMOD.distName LIKE CONCAT(_xml_.MRBTS.distName, '%') LIMIT 1) AS MRBTS_NAME,
-   _xml_.SMOD._MRBTS AS MRBTS_ID,
-   _xml_.SMOD._version AS VERSION,
-   _xml_.SMOD.prodCode AS PRODUCT_CODE,
-   _xml_.SMOD.serialNumber AS SERIAL_NUMBER   
-FROM _xml_.SMOD
-WHERE
-     (_xml_.SMOD._RNC IS NULL OR _xml_.SMOD._RNC = "-") AND  
-     _xml_.SMOD.customerId = _cid_ ;
-
 /*QUERY_NAME: SMOD_R*/        
 SELECT _xml_.SMOD_R.dateTime AS DATE,
    (SELECT _xml_.MRBTS.name FROM _xml_.MRBTS WHERE
@@ -137,8 +121,8 @@ SELECT _xml_.SMOD_R.dateTime AS DATE,
    _xml_.SMOD_R.productCode AS PRODUCT_CODE,
    _xml_.SMOD_R.serialNumber AS SERIAL_NUMBER   
 FROM _xml_.SMOD_R
-WHERE
-     (_xml_.SMOD_R._RNC IS NULL OR _xml_.SMOD_R._RNC = "-") AND  
+WHERE     
+     _xml_.SMOD_R.distName NOT LIKE '%/RNC-%' AND
      _xml_.SMOD_R.customerId = _cid_ ;  
 
 /*QUERY_NAME: SMOD_EXT_R*/        
@@ -153,26 +137,10 @@ SELECT _xml_.SMOD_EXT_R.dateTime AS DATE,
    _xml_.SMOD_EXT_R.serialNumber AS SERIAL_NUMBER   
 FROM _xml_.SMOD_EXT_R
 WHERE
-    (_xml_.SMOD_EXT_R._RNC IS NULL OR _xml_.SMOD_EXT_R._RNC = "-") AND  
+     _xml_.SMOD_EXT_R.distName NOT LIKE '%/RNC-%' AND
      _xml_.SMOD_EXT_R.customerId = _cid_ ;  
    
-
-/*QUERY_NAME: RMOD*/   
-SELECT _xml_.RMOD.dateTime AS DATE,
-   (SELECT _xml_.MRBTS.name FROM _xml_.MRBTS WHERE
-      _xml_.RMOD.customerId = _xml_.RMOD.customerID AND
-      _xml_.RMOD.file_uuid = _xml_.RMOD.file_uuid AND
-      _xml_.RMOD.distName LIKE CONCAT(_xml_.MRBTS.distName, '%') LIMIT 1) AS MRBTS_NAME,
-   _xml_.RMOD._MRBTS AS MRBTS_ID,
-   _xml_.RMOD._version AS VERSION,
-   _xml_.RMOD.prodCode AS PRODUCT_CODE,
-   _xml_.RMOD.serialNumber AS SERIAL_NUMBER   
-FROM _xml_.RMOD
-WHERE
-     (_xml_.RMOD._RNC IS NULL OR _xml_.RMOD._RNC = "-") AND  
-     _xml_.RMOD.customerId = _cid_ ;  
-     
-
+       
 /*QUERY_NAME: RMOD_R*/   
 SELECT _xml_.RMOD_R.dateTime AS DATE,
    (SELECT _xml_.MRBTS.name FROM _xml_.MRBTS WHERE
@@ -185,7 +153,7 @@ SELECT _xml_.RMOD_R.dateTime AS DATE,
    _xml_.RMOD_R.serialNumber AS SERIAL_NUMBER   
 FROM _xml_.RMOD_R
 WHERE
-     (_xml_.RMOD_R._RNC IS NULL OR _xml_.RMOD_R._RNC = "-") AND  
+     _xml_.RMOD_R.distName NOT LIKE '%/RNC-%' AND 
      _xml_.RMOD_R.customerId = _cid_ ;        
    
 
@@ -227,8 +195,8 @@ WHERE
    _xml_.FTM.customerId = _xml_.LNBTS.customerID AND
    _xml_.LNBTS._MRBTS = _xml_.MRBTS._MRBTS AND
    _xml_.MRBTS.customerId = _xml_.MRBTS.customerId AND
-   _xml_.MRBTS.customerId = _log_.cliente.id AND
-   (_xml_.MRBTS._RNC IS NULL OR _xml_.MRBTS._RNC = "-") AND
+   _xml_.MRBTS.customerId = _log_.cliente.id AND   
+   _xml_MRBTS.distName NOT LIKE '%/RNC-%' AND
    _log_.cliente.id = _cid_ ;
 
 /*QUERY_NAME: MRBTS_MME*/
@@ -263,8 +231,8 @@ SELECT _xml_.IPRT.dateTime AS DATE,
    _xml_.IPRT_staticRoutes.preference AS PREFERENCE
 FROM _xml_.IPRT,
    _xml_.IPRT_staticRoutes   
-WHERE
-   (_xml_.IPRT._RNC = '-' OR _xml_.IPRT._RNC IS NULL) AND
+WHERE   
+   _xml_.IPRT.distName NOT LIKE '%/RNC-%' AND
    _xml_.IPRT_staticRoutes.distName = _xml_.IPRT.distName AND
    _xml_.IPRT_staticRoutes.customerId = _xml_.IPRT.customerId AND
    _xml_.IPRT.customerId = _cid_;   
