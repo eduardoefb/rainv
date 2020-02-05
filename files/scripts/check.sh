@@ -215,8 +215,7 @@ if [ $rmdup -eq 1 ]; then
                mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "DELETE FROM $tab WHERE distName = '$dn' AND file_uuid = '$fuuid'" 2>/dev/null
             done
          done      
-      done
-      echo $dups
+      done      
       if [ $dups -eq 0 ]; then
          break
       fi
