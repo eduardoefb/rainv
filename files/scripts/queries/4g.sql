@@ -196,7 +196,7 @@ WHERE
    _xml_.LNBTS._MRBTS = _xml_.MRBTS._MRBTS AND
    _xml_.MRBTS.customerId = _xml_.MRBTS.customerId AND
    _xml_.MRBTS.customerId = _log_.cliente.id AND   
-   _xml_MRBTS.distName NOT LIKE '%/RNC-%' AND
+   _xml_.MRBTS.distName NOT LIKE '%/RNC-%' AND
    _log_.cliente.id = _cid_ ;
 
 /*QUERY_NAME: MRBTS_MME*/
