@@ -65,9 +65,9 @@ class esheet:
 	def set_column_names(self, data):
 		lin = col = 0;
 		for x in data:
-		  self.__ws.write(0, col, x, self.__fmt_header);
-		  self.__col_size.append(len(x))
-		  col += 1
+			self.__ws.write(0, col, x, self.__fmt_header);
+			self.__col_size.append(len(x))
+			col += 1
 		  			
 	def set_lines(self, data):
 		lin = col = 0;
@@ -76,7 +76,7 @@ class esheet:
 			col = 0
 			for i, y in enumerate(x):		
 				self.__ws.write(lin, col, str(y), self.__fmt_gen);
-				if(self.__col_size[i] < len(str(y).strip())):
+				if self.__col_size[i] < len(str(y).strip()):
 					self.__col_size[i] = len(str(y).strip())
 				col += 1
 		
@@ -148,8 +148,8 @@ for q in query_files:
 						
 			if l.strip().startswith("SELECT "):
 				if qf == False:
-				   qf = True
-				   query = l.strip()
+					qf = True
+					query = l.strip()
 				else:
 					query = str(query) + " " + str(l.strip())
 									
@@ -180,4 +180,3 @@ for q in query_files:
 			cr.execute("UPDATE " +  conf.get_db1_name() + ".xlsxfiles SET " +   conf.get_db1_name() + ".xlsxfiles.status = 'CREATED', " + conf.get_db1_name() + ".xlsxfiles.finished_date = '" + str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")) + "' WHERE " + conf.get_db1_name() + ".xlsxfiles.name = '" + str(zp_name) + "';")
 			
 		mydb.commit()
-		

@@ -3,7 +3,7 @@
 function start(){
    while :; do
       sleep ${SLEEP_TIME}
-      bash -x ${SCRIPT_DIR}/check.sh >> ${SCRIPT_DIR}/update.log 2>>${SCRIPT_DIR}/update.log
+      bash ${SCRIPT_DIR}/check.sh >> ${SCRIPT_DIR}/update.log 2>>${SCRIPT_DIR}/update.log
    done
 }
 
