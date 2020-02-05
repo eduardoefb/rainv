@@ -194,20 +194,22 @@ rm ${sqlf}
 
 #Remove duplications:
 rmdup=1
+source /opt/nokia/nedata/scripts/var.conf
+db_user=`grep "mysql_user " $DB_CONFIG_FILE | awk '{print $NF}'` 
+db_pass=`grep "mysql_user_pw " $DB_CONFIG_FILE | awk '{print $NF}'`
 
 if [ $rmdup -eq 1 ]; then
    while :; do
       dups=0
-      for tables in `mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SHOW TABLES;" | grep -v "_"`; do
+      for tables in `mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SHOW TABLES;" | grep -vP ".{2}_..+[a-z0-9]"`; do
          for dn in `mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SELECT distName, COUNT(*) AS times, IF (COUNT(*)>1,\"duplicated\", \" \") AS duplicated FROM $tables GROUP BY IFNULL(distName, CONCAT(distName,name))" | grep "duplicated" | awk '{print $1}'`; do      
             dups=$(($dups+1))
             ver=`mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SELECT _version from $tables WHERE distName = '$dn' ORDER BY _version LIMIT 1"`
-            name=`mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SELECT _version, name from $tables WHERE distName = '$dn' ORDER BY _version LIMIT 1" |awk '{print $2}'`         
-            fuuid=`mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SELECT _version, file_uuid from $tables WHERE distName = '$dn' ORDER BY _version LIMIT 1" |awk '{print $2}'`         
-            echo "`date` Removing duplication: $dn Version: $ver Name: $name $fuuid"
-            #mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "DELETE FROM $tables WHERE distName = '$dn' AND _version = '$ver' AND name = '$name'" 2>/dev/null
-            mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "DELETE FROM $tables WHERE distName = '$dn' AND _version = '$ver' AND name = '$name' OR name IS NULL"   2>/dev/null
-            for tab in `mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SHOW TABLES;" | grep "_"`; do
+            name=`mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SELECT name from $tables WHERE distName = '$dn' ORDER BY _version LIMIT 1"`         
+            fuuid=`mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SELECT file_uuid from $tables WHERE distName = '$dn' ORDER BY _version LIMIT 1"`         
+            echo "`date` Removing duplication: $dn Version: $ver Name: $name $fuuid"            
+            mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "DELETE FROM $tables WHERE distName = '$dn' AND _version = '$ver' AND (name = '$name' OR name IS NULL) AND file_uuid = '$fuuid''"   2>/dev/null
+            for tab in `mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "SHOW TABLES;" | grep -vP ".{2}_..+[a-z0-9]"`; do
                echo "`date` Removing duplication: $dn Version: $ver Name: $name $fuuid from table $tab"           
                mysql -Ns -u $db_user -p$db_pass $DB2_NAME -e "DELETE FROM $tab WHERE distName = '$dn' AND file_uuid = '$fuuid'" 2>/dev/null
             done
@@ -223,13 +225,8 @@ fi
 for c in ${clist[*]}; do   
    rm -rf $WORK_DIR/xlsfiles/${cname[ind]}/  2>/dev/null
    rm -rf $XLS_DL_DIR/${cname[ind]}.zip 2>/dev/null
-   mkdir -pv $WORK_DIR/xlsfiles/${cname[ind]}/   
-   
-   
-   #$GENERATE_DATA_CMD -c $(($c)) -d $WORK_DIR/xlsfiles/${cname[ind]}/
-   $GENERATE_DATA_CMD -c $(($c)) -d $WORK_DIR/xlsfiles/
-   
-   
+   mkdir -pv $WORK_DIR/xlsfiles/${cname[ind]}/          
+   $GENERATE_DATA_CMD -c $(($c)) -d $WORK_DIR/xlsfiles/      
    cwd=`pwd`
    cd $XLS_DL_DIR/   
    cp ${cname[ind]}*.xlsx ${cname[ind]}/
@@ -243,5 +240,4 @@ echo "`date` XLSX files created ..."
 
 #Delete running file:
 rm $SCRIPT_RUNNING_FILE 2>/dev/null
-
 
